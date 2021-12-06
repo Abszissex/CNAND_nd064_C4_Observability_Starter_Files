@@ -73,26 +73,53 @@ Note: I used 30M instead of 24h period, because in a 24h you wouldn't see any ch
 ## Tracing our Flask App
 *TODO:*  We will create a Jaeger span to measure the processes on the backend. Once you fill in the span, provide a screenshot of it here. Also provide a (screenshot) sample Python file containing a trace and span code used to perform Jaeger traces on the backend service.
 
+✅ DONE 
+![Tracing API call via Jaeger in Grafana](./answer-img/jaeger_tracing_app.png)
+
+✅ DONE 
+![Python code to trace API calls](./answer-img/jaeger_tracing_app_code.png)
+
+
 
 ## Jaeger in Dashboards
 *TODO:* Now that the trace is running, let's add the metric to our current Grafana dashboard. Once this is completed, provide a screenshot of it here.
+
+
+✅ DONE 
+![Tracing API call via Jaeger in Grafana Dashboard](./answer-img/jaeger_in_grafana_dashboard.png)
 
 ## Report Error
 *TODO:* Using the template below, write a trouble ticket for the developers, to explain the errors that you are seeing (400, 500, latency) and to let them know the file that is causing the issue also include a screenshot of the tracer span to demonstrate how we can user a tracer to locate errors easily.
 
 TROUBLE TICKET
 
-Name:
+**Name:** Pascal Zwikirsch
 
-Date:
+**Date:** 2021-12-06 15:23:58
 
-Subject:
+**Subject:** `trial-app` | Internal Server Error on `GET /error`
 
-Affected Area:
+**Affected Area:** `trial-app` (File: `app.py`)
 
-Severity:
+**Severity:** Medium
 
-Description:
+**Description:**
+In todays tracing we identified a few errors that are being triggered on the `/error` route when being hit with a `GET` request.
+It appears that every time we trigger the route on the service an `500 Internal Server Error` is returned.
+The error can be reproduced by simply triggering the url `http://localhost:30001/error`.
+
+Additional information that could be derived by the logs:
+```json
+{
+    "event": "Error Handler",
+    "count": 5
+}
+```
+
+More information details can be found on attached image:
+![Tracing information of reported error](./answer-img/report_error_ticket_span.png)
+
+In case you feel that some information is missing, feel free to reach out.
 
 
 ## Creating SLIs and SLOs
