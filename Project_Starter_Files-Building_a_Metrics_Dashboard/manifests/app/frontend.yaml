@@ -14,9 +14,16 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: ghcr.io/thejaysmith/myfrontend:v1
+        image: abszissex/frontend:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: pod-storage
+          mountPath: /tmp
+      volumes:
+      - name: pod-storage
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

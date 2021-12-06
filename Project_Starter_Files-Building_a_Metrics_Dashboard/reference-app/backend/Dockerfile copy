@@ -1,0 +1,45 @@
+# Use the official Python image.
+# https://hub.docker.com/_/python
+FROM python:3.8-alpine
+
+
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install -r /tmp/requirements.txt
+
+ADD . /tmp/latest
+RUN pip install -e /tmp/latest --upgrade
+
+ADD app.py config.py /var/flask/
+
+WORKDIR /var/flask
+ENV PROMETHEUS_MULTIPROC_DIR /tmp
+ENV prometheus_multiproc_dir /tmp
+CMD gunicorn -c config.py -w 4 -b 0.0.0.0:4000 server:app
+
+
+
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+
+
+ARG PROJECT_ID
+ENV PROJECT_ID ${PROJECT_ID}
+
+COPY requirements.txt requirements.txt
+
+
+# Install production dependencies.
+RUN apt-get update
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+
+ENV PROMETHEUS_MULTIPROC_DIR /tmp
+ENV prometheus_multiproc_dir /tmp
+
+COPY . ./
+RUN mkdir tmp
+
+#CMD ["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "4", "-b", "0.0.0.0:8080", "app:app"]
+CMD gunicorn -c config.py -w 4 -b 0.0.0.0:8080 app:app

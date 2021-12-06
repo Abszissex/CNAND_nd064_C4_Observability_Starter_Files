@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trial-app
+  labels:
+    name: trial-app
+    release: prometheus
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: trial-port
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trial-app
+  template:
+    metadata:
+      labels:
+        app: trial-app
+    spec:
+      containers:
+      - name: trial-app
+        image: abszissex/trial:latest
+        imagePullPolicy: Always
+        env:
+        - name: JAEGER_HOST
+          value: simpletest-query.observability.svc.cluster.local
+        ports:
+        - name: trial-port
+          containerPort: 8080
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trial-app
+  labels:
+    app: trial-app
+spec:
+  selector:
+    app: trial-app
+  ports:
+    - name: trial-app
+      port: 8082
+      targetPort: trial-port
+      nodePort: 30001
+      protocol: TCP
+  type: NodePort

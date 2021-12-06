@@ -16,7 +16,7 @@ app = Flask(__name__)
 FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 
-metrics = PrometheusMetrics(app)
+metrics = PrometheusMetrics(app, group_by='endpoint')
 # static information as metric
 metrics.info("app_info", "Application info", version="1.0.3")
 
@@ -49,6 +49,19 @@ flask_tracer = FlaskTracing(tracer, True, app)
 @app.route("/")
 def homepage():
     return render_template("main.html")
+
+
+@app.route('/test')
+def index():
+    with tracer.start_span('hello world') as span:
+        hw = "Hello World"
+        span.set_tag('message', "Hello World")
+    return "Hello World"
+
+
+@app.route('/error')
+def error():
+    raise Exception('Fail')
 
 
 @app.route("/trace")
