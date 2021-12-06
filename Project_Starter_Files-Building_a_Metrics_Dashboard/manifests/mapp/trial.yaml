@@ -11,7 +11,7 @@ metadata:
     prometheus.io/path: /metrics
     prometheus.io/port: trial-port
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: trial-app
@@ -24,9 +24,9 @@ spec:
       - name: trial-app
         image: abszissex/trial:latest
         imagePullPolicy: Always
-        env:
-        - name: JAEGER_HOST
-          value: simpletest-query.observability.svc.cluster.local
+        #env:
+        #- name: JAEGER_HOST
+        #  value: simpletest-query.observability.svc.cluster.local:16686
         ports:
         - name: trial-port
           containerPort: 8080
