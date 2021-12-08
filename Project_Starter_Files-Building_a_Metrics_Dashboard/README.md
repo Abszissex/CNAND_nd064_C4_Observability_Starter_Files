@@ -91,6 +91,7 @@ Note: I used 30M instead of 24h period, because in a 24h you wouldn't see any ch
 ## Report Error
 *TODO:* Using the template below, write a trouble ticket for the developers, to explain the errors that you are seeing (400, 500, latency) and to let them know the file that is causing the issue also include a screenshot of the tracer span to demonstrate how we can user a tracer to locate errors easily.
 
+✅ DONE 
 TROUBLE TICKET
 
 **Name:** Pascal Zwikirsch
@@ -125,22 +126,40 @@ In case you feel that some information is missing, feel free to reach out.
 ## Creating SLIs and SLOs
 *TODO:* We want to create an SLO guaranteeing that our application has a 99.95% uptime per month. Name four SLIs that you would use to measure the success of this SLO.
 
+✅ DONE
+- Request Latency -> How long it takes to return a response to a request
+- Error Rate -> How many 5XX are triggered, compared to successful responses
+- Availability -> Was there a time the service/system wasn't available/reachable
+- Saturation -> Hardware usage CPU / Memory needs to be kept in check to prevent issues
+
+
 ## Building KPIs for our plan
 *TODO*: Now that we have our SLIs and SLOs, create a list of 2-3 KPIs to accurately measure these metrics as well as a description of why those KPIs were chosen. We will make a dashboard for this, but first write them down here.
+
+✅ DONE
+Referring to https://knowledge.udacity.com/questions/693931 I actually think that the SLIs I mentioned on the previous question are already the KPIs needed here.
+
+
 
 ## Final Dashboard
 *TODO*: Create a Dashboard containing graphs that capture all the metrics of your KPIs and adequately representing your SLIs and SLOs. Include a screenshot of the dashboard here, and write a text description of what graphs are represented in the dashboard.  
 
+✅ DONE
+
+- The "Saturation" is displayed via the "Node Memory usage" and "Node CPU usage" to keep the hardware metrics in track.
+- The "Error Rate" is described via the "Error Rate" graph which displays the number of errors divided by the total number of requests
+- The "Availability" is described via the "Up Container" and "Unavailabile Replicas" graphs, which displayed the amount of currently running containers and the amount of currently unavailable replicas, indicating a possible downtime
+- The "Request Latency" is displayed in the "Request Latency" graph, that shows the average time for a request to respond. Also the "Jaeger" table at the bottom right is also showing the requests being made and their duration.
+![Final Dashboard](./answer-img/final_dashboard.png)
 
 
 
-
 ----
 ----
 ----
 ----
 ----
-## Setup Notes
+# PERSONAL Notes 
 
 ```sh
 # Set kube context
@@ -176,7 +195,6 @@ kubectl create -n ${namespace} -f https://raw.githubusercontent.com/jaegertracin
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/${jaeger_version}/deploy/cluster_role.yaml
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/${jaeger_version}/deploy/cluster_role_binding.yaml
 
-## TODO: Verify if we need this??
 kubectl create -f https://raw.githubusercontent.com/jaegertracing/jaeger-operator/master/examples/business-application-injected-sidecar.yaml
 
 unset namespace
@@ -209,6 +227,7 @@ kubectl get pod -n monitoring | grep grafana
 ## Port forward the port of the pod
 
 kubectl port-forward -n monitoring prometheus-grafana-XXX 3000
+# kubectl port-forward -n monitoring prometheus-grafana-5cc44d8f4f-hj2gb 3000
 
 
 # Prometheus UI -> Check "get svc" to get pod name and port
@@ -222,7 +241,7 @@ kubectl port-forward -n monitoring service/prometheus-kube-prometheus-prometheus
 
 # Jaeger port forwarding
 ## -> http://127.0.0.1:16686/search
-kubectl port-forward -n observability service/simplest-query --address 0.0.0.0 16686:16686
+kubectl port-forward -n observability service/simpletest-query --address 0.0.0.0 16686:16686
 
 
 
@@ -296,6 +315,8 @@ kubectl logs -l app=trial
 ### Delete pod
 kubectl delete pod --grace-period=0 --force --namespace [NAMESPACE] [POD_NAME]
 
+### Delete all pods from this project (Need to verify!)
+kubectl get pods -n default --no-headers=true | awk '/frontend|backend|trial/{print $1}'| xargs kubectl delete -n default pod --grace-period=0 --force
 
 
 ### Metrics
