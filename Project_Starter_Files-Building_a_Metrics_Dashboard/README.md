@@ -65,8 +65,16 @@ High saturation of a system can lead to potential performance decrease or even a
 ## Create a Dashboard to measure our SLIs
 *TODO:* Create a dashboard to measure the uptime of the frontend and backend services We will also want to measure to measure 40x and 50x errors. Create a dashboard that show these values over a 24 hour period and take a screenshot.
 
-🚧 -> Use backend + frontend app instead of trial App 
+✅ DONE 
 Note: I used 30M instead of 24h period, because in a 24h you wouldn't see any changes, since the VM didn't exist that long.
+Also the Graph is only showing metrics for one demo application, but I added the following to my boards to make sure that it works for an undefined amount of containers
+```
+sum by (container) (
+    increase(
+        flask_http_request_total{status=~"2.+"}[1m]
+    )
+)
+```
 ![Grafana showing SLI](./answer-img/sli_dashboard.png)
 
 
