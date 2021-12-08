@@ -43,7 +43,6 @@ The the end of the month I would compare the amount of requests under 200ms and 
 *TODO:* It is important to know why we want to measure certain metrics for our customer. Describe in detail 5 metrics to measure these SLIs. 
 
 ✅ DONE 
-
 ### Latency
 Latency is the time taken to serve a request (usually measured in ms), aka response time.
 This metric is important for our customers to have a smooth experience using e.g. the frontend. Increased latency means that customers needs to wait longer which often results in customers leaving the website or in case of an application the change for them the provider is increased.
