@@ -4,7 +4,8 @@
 
 *TODO:* run `kubectl` command to show the running pods and services for all components. Take a screenshot of the output and include it here to verify the installation
 
-✅ DONE 
+✅ DONE
+
 ![All Pods](./answer-img/kubectl_all_po.png)
 ![All Services](./answer-img/kubectl_all_svc.png)
 
@@ -12,13 +13,15 @@
 ## Setup the Jaeger and Prometheus source
 *TODO:* Expose Grafana to the internet and then setup Prometheus as a data source. Provide a screenshot of the home page after logging into Grafana.
 
-✅ DONE 
+✅ DONE
+
 ![Prometheus Dashboard in Grafana](./answer-img/prometheus_in_grafana.png)
 
 ## Create a Basic Dashboard
 *TODO:* Create a dashboard in Grafana that shows Prometheus as a source. Take a screenshot and include it here.
 
-✅ DONE 
+✅ DONE
+
 ![Prometheus Source in Grafana](./answer-img/prometheus_source.png)
 
 
@@ -43,6 +46,7 @@ The the end of the month I would compare the amount of requests under 200ms and 
 *TODO:* It is important to know why we want to measure certain metrics for our customer. Describe in detail 5 metrics to measure these SLIs. 
 
 ✅ DONE 
+
 ### Latency
 Latency is the time taken to serve a request (usually measured in ms), aka response time.
 This metric is important for our customers to have a smooth experience using e.g. the frontend. Increased latency means that customers needs to wait longer which often results in customers leaving the website or in case of an application the change for them the provider is increased.
@@ -65,6 +69,7 @@ High saturation of a system can lead to potential performance decrease or even a
 *TODO:* Create a dashboard to measure the uptime of the frontend and backend services We will also want to measure to measure 40x and 50x errors. Create a dashboard that show these values over a 24 hour period and take a screenshot.
 
 ✅ DONE 
+
 Note: I used 30M instead of 24h period, because in a 24h you wouldn't see any changes, since the VM didn't exist that long.
 Also the Graph is only showing metrics for one demo application, but I added the following to my boards to make sure that it works for an undefined amount of containers
 ```
@@ -81,9 +86,11 @@ sum by (container) (
 *TODO:*  We will create a Jaeger span to measure the processes on the backend. Once you fill in the span, provide a screenshot of it here. Also provide a (screenshot) sample Python file containing a trace and span code used to perform Jaeger traces on the backend service.
 
 ✅ DONE 
+
 ![Tracing API call via Jaeger in Grafana](./answer-img/jaeger_tracing_app.png)
 
 ✅ DONE 
+
 ![Python code to trace API calls](./answer-img/jaeger_tracing_app_code.png)
 
 
@@ -92,13 +99,15 @@ sum by (container) (
 *TODO:* Now that the trace is running, let's add the metric to our current Grafana dashboard. Once this is completed, provide a screenshot of it here.
 
 
-✅ DONE 
+✅ DONE
+
 ![Tracing API call via Jaeger in Grafana Dashboard](./answer-img/jaeger_in_grafana_dashboard.png)
 
 ## Report Error
 *TODO:* Using the template below, write a trouble ticket for the developers, to explain the errors that you are seeing (400, 500, latency) and to let them know the file that is causing the issue also include a screenshot of the tracer span to demonstrate how we can user a tracer to locate errors easily.
 
-✅ DONE 
+✅ DONE
+
 TROUBLE TICKET
 
 **Name:** Pascal Zwikirsch
@@ -134,6 +143,7 @@ In case you feel that some information is missing, feel free to reach out.
 *TODO:* We want to create an SLO guaranteeing that our application has a 99.95% uptime per month. Name four SLIs that you would use to measure the success of this SLO.
 
 ✅ DONE
+
 - Request Latency -> How long it takes to return a response to a request
 - Error Rate -> How many 5XX are triggered, compared to successful responses
 - Availability -> Was there a time the service/system wasn't available/reachable
@@ -144,6 +154,7 @@ In case you feel that some information is missing, feel free to reach out.
 *TODO*: Now that we have our SLIs and SLOs, create a list of 2-3 KPIs to accurately measure these metrics as well as a description of why those KPIs were chosen. We will make a dashboard for this, but first write them down here.
 
 ✅ DONE
+
 Referring to https://knowledge.udacity.com/questions/693931 I actually think that the SLIs I mentioned on the previous question are already the KPIs needed here.
 
 
@@ -309,24 +320,24 @@ kubectl rollout restart deployment
 
 
 
-# frontend
-gunicorn --access-logfile - --error-logfile - -w 4 -b 0.0.0.0:8080 app:app
-
-
+### logs
+```
 follow logs
 kubectl logs -f -n observability simplest-7b9cddf779-pl5rv
 
 ### get logs from whole app (all pods)
 kubectl logs -l app=trial
+```
 
 ### Delete pod
+```
 kubectl delete pod --grace-period=0 --force --namespace [NAMESPACE] [POD_NAME]
 
 ### Delete all pods from this project (Need to verify!)
 kubectl get pods -n default --no-headers=true | awk '/frontend|backend|trial/{print $1}'| xargs kubectl delete -n default pod --grace-period=0 --force
+```
 
-
-### Metrics
+### Example PromQL
 ```sh
 sum by (container, status) (rate(flask_http_request_duration_seconds_count{}[1m]))
 
