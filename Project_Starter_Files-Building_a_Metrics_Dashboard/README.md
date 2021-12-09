@@ -9,6 +9,12 @@
 ![All Pods](./answer-img/kubectl_all_po.png)
 ![All Services](./answer-img/kubectl_all_svc.png)
 
+## The README has a screenshot showing the home page after login
+
+✅ DONE
+
+![Frana Home Page](./answer-img/grafana_home_page.png)
+
 
 ## Setup the Jaeger and Prometheus source
 *TODO:* Expose Grafana to the internet and then setup Prometheus as a data source. Provide a screenshot of the home page after logging into Grafana.
