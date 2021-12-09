@@ -270,6 +270,7 @@ kubectl port-forward -n observability service/simpletest-query --address 0.0.0.0
 
 
 # Port foward (Expose) application
+kubectl port-forward svc/trial-app 8082:8082
 
 kubectl port-forward svc/frontend-service 8080:8080
 
@@ -291,7 +292,7 @@ kubectl get -n observability ingress
 ## Build 'backend' image
 docker build -f ./Dockerfile -t abszissex/backend:latest . && docker push abszissex/backend:latest
 
-docker build -f ./Dockerfile -t abszissex/frontend:latest . && docker push abszissex/backend:latest
+docker build -f ./Dockerfile -t abszissex/frontend:latest . && docker push abszissex/frontend:latest
 
 docker build -f ./Dockerfile -t abszissex/trial:latest . && docker push abszissex/trial:latest
 
