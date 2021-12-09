@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fr-app
+  labels:
+    name: fr-app
+    release: prometheus
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: fr-port
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fr-app
+  template:
+    metadata:
+      labels:
+        app: fr-app
+    spec:
+      containers:
+      - name: fr-app
+        image: abszissex/frontend:latest
+        imagePullPolicy: Always
+        #env:
+        #- name: JAEGER_HOST
+        #  value: simpletest-query.observability.svc.cluster.local:16686
+        ports:
+        - name: fr-port
+          containerPort: 8080
+          protocol: TCP
+        - name: fr-metrics
+          containerPort: 8081
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fr-app
+  labels:
+    app: fr-app
+spec:
+  selector:
+    app: fr-app
+  ports:
+    - name: fr-app
+      port: 8082
+      targetPort: fr-port
+      nodePort: 30005
+      protocol: TCP
+    - name: fr-metrics-app
+      port: 8081
+      targetPort: fr-metrics
+      nodePort: 30006
+      protocol: TCP
+  type: NodePort

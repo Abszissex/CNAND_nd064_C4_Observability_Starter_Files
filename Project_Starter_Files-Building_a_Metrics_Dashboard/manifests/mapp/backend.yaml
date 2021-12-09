@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  labels:
+    name: backend-app
+    release: prometheus
+  annotations:
+    "sidecar.jaegertracing.io/inject": "true"
+    prometheus.io/scrape: "true"
+    prometheus.io/path: /metrics
+    prometheus.io/port: backend-port
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      containers:
+      - name: backend-app
+        image: abszissex/backend:latest
+        imagePullPolicy: Always
+        #env:
+        #- name: JAEGER_HOST
+        #  value: simpletest-query.observability.svc.cluster.local:16686
+        ports:
+        - name: backend-port
+          containerPort: 8080
+          protocol: TCP
+        - name: backend-metrics
+          containerPort: 8081
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-app
+  labels:
+    app: backend-app
+spec:
+  selector:
+    app: backend-app
+  ports:
+    - name: backend-app
+      port: 8082
+      targetPort: backend-port
+      nodePort: 30003
+      protocol: TCP
+    - name: backend-metrics-app
+      port: 8081
+      targetPort: backend-metrics
+      nodePort: 30004
+      protocol: TCP
+  type: NodePort
