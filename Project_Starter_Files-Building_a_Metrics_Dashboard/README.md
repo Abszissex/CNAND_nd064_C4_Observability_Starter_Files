@@ -77,15 +77,15 @@ High saturation of a system can lead to potential performance decrease or even a
 ✅ DONE 
 
 Note: I used 30M instead of 24h period, because in a 24h you wouldn't see any changes, since the VM didn't exist that long.
-Also the Graph is only showing metrics for one demo application, but I added the following to my boards to make sure that it works for an undefined amount of containers
-```
-sum by (container) (
-    increase(
-        flask_http_request_total{status=~"2.+"}[1m]
-    )
-)
-```
-![Grafana showing SLI](./answer-img/sli_dashboard.png)
+But for the purpose of this requirement I also added the 24h view, even though you obviously won't see a lot there, due to the load test was just done recently
+
+The `fr-app` is the `frontend` app, I just shorted the name a bit.
+
+30 Min:
+![Grafana showing SLI 30M](./answer-img/4xx_5xx_30min.png)
+
+24 Hours:
+![Grafana showing SLI 24H](./answer-img/4xx_5xx_24h.png)
 
 
 ## Tracing our Flask App
